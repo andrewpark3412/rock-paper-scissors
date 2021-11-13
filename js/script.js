@@ -51,20 +51,50 @@ function playRound(playerSelection, computerSelection) {
   return `Draw! Please try Again!`;
 }
 
-function game() {
-  for (let index = 0; index < 5; index++) {
-    let playerSelection = prompt('Type: Rock, Paper, or Scissors')
-    playerSelection = playerSelection.toLowerCase();
-    const computerSelection = computerPlay()
-    console.log(playRound(playerSelection, computerSelection))
-  }
+const container = document.querySelector('#container');
+const playerScoreContainer = document.createElement('div');
+const computerScoreContainer = document.createElement('div');
+const roundResultDiv = document.createElement('div');
+const finalScoreDiv = document.createElement('div');
+playerScoreContainer.innerHTML = 'Your score: <span id="player-score">0</span>';
+computerScoreContainer.innerHTML = 'Computer score: <span id="computer-score">0</span>';
+const buttons = document.querySelectorAll('button');
+container.appendChild(playerScoreContainer);
+container.appendChild(computerScoreContainer);
+container.appendChild(roundResultDiv);
+container.appendChild(finalScoreDiv);
+
+const playerScoreElement = playerScoreContainer.querySelector('#player-score');
+const computerScoreElement = computerScoreContainer.querySelector('#computer-score');
+
+buttons.forEach((button) => {
+  button.addEventListener('click', () => {
+    let playerSelection = button.id;
+    const computerSelection = computerPlay();
+    roundResultDiv.textContent = playRound(playerSelection, computerSelection);
+
+    playerScoreElement.textContent = playerScore;
+    computerScoreElement.textContent = computerScore;
+    if (playerScore > 4 || computerScore > 4) {
+      finalScoreDiv.textContent = completeGame(playerScore, computerScore);
+      container.removeChild(roundResultDiv);
+      disableButtons(buttons);
+    }
+  });
+});
+
+function completeGame(playerScore, computerScore) {
   if (playerScore > computerScore) {
-    console.log(`You won! Final Score is ${playerScore} to ${computerScore}`);
+    return `You won! Final Score is ${playerScore} to ${computerScore}`;
   } else if (computerScore > playerScore) {
-    console.log(`You lost! Final Score is ${playerScore} to ${computerScore}`);
+    return `You lost! Final Score is ${playerScore} to ${computerScore}`;
   } else {
-    console.log(`That's a tie! Final Score is ${playerScore} to ${computerScore}`);
+    return `That's a tie! Final Score is ${playerScore} to ${computerScore}`;
   }
 }
 
-game();
+function disableButtons(buttons) {
+  buttons.forEach((button) => {
+    container.removeChild(button);
+  });
+}
